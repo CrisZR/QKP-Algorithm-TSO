@@ -14,7 +14,7 @@ def Call_Instance(tx: str) -> tuple[bool, str]:
         with open(f'QKPGroupI/{tx}') as file:
             txt = file.read()
         if txt:
-            logging.info("Intancia exitosa")
+            logging.info("Instancia exitosa")
             data_array = np.array(txt)
             return True, data_array
     
@@ -23,5 +23,16 @@ def Call_Instance(tx: str) -> tuple[bool, str]:
         return False, f'Error en la ejectución: {str(e)}'
      
 cwd = os.listdir('QKPGroupI')
-tx =  random.choice(cwd)
-print(Call_Instance(tx))
+print("Instancias disponibles:")
+for i, file_name in enumerate(cwd, start=1):
+    print(f"{i}. {file_name}")
+
+try:
+    choice = int(input("Seleccione el número de la instancia que desea cargar: "))
+    if 1 <= choice <= len(cwd):
+        tx = cwd[choice - 1]
+        print(Call_Instance(tx))
+    else:
+        print("Selección inválida. Por favor, elija un número válido.")
+except ValueError:
+    print("Entrada inválida. Por favor, ingrese un número.")
