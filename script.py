@@ -7,22 +7,45 @@ import time
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-def obtain_data(arr: str) -> typing.Optional[dict]:
+
+# Function to obtain data from the file
+
+def obtain_data(arr: list) -> typing.Optional[dict]:
+    reference = arr.pop(0).strip()
+    N = int(arr.pop(0).strip())
+    coefficients = arr.pop(0).strip()
+
+    # Read matrix Q (tamaño NxN)
+    Q_matrix = []
+    for _ in range(N):
+        line = arr.pop(0).strip()
+        row = list(map(int, line.split()))
+        Q_matrix.append(row)
+
+    # Get Constraint, Capacity, Weights...
+    constraint = arr.pop(0).strip()
+    capacity = arr.pop(0).strip()
+    weights = arr.pop(0).strip()
+
+    
+    error1 = arr.pop(-2).strip()
+    error2 = arr.pop(-1).strip()
+
     data_dict = {
-        'reference': arr.pop(0).strip(),
-        'NVariables': arr.pop(0).strip(),
-        'Coefficients': arr.pop(0).strip(),
-        'Constraint': arr.pop(-8).strip(),
-        'Capacity': arr.pop(-7).strip(),
-        'Weights': arr.pop(-6).strip(),
-        "error": arr.pop(-2).strip(),
-        "error1": arr.pop(-3).strip()
+        'reference': reference,
+        'NVariables': N,
+        'Coefficients': coefficients,
+        'Constraint': constraint,
+        'Capacity': capacity,
+        'Weights': weights,
+        "error": error1,
+        "error1": error2,
+        'Q_matrix': Q_matrix
     }
-    max_length = max(len(line.split()) for line in arr if line.strip())
-    matrix = [list(map(int, line.split())) + [0] * (max_length - len(line.split())) for line in arr if line.strip()]
-    np_matrix = np.array(matrix)
 
     return data_dict
+
+#Function to call the instance and process the data
 
 def call_instance(txt: str) -> None:
     try:
@@ -31,7 +54,7 @@ def call_instance(txt: str) -> None:
             arr = file.readlines()
         data_array = obtain_data(arr)
 
-        # Initialize knapsack
+        # Initialize knapsack and profit
         S = []
         wa = 0
         total_profit = 0
@@ -44,14 +67,7 @@ def call_instance(txt: str) -> None:
         R = {i: profit[i] / wi[i] for i in range(len(profit)) if wi[i] > 0}
         sorted_items = sorted(R.items(), key=lambda x: x[1], reverse=True)
 
-
-        # Read matrix Q
-        Q_matrix = []
-        with open(f'QKPGroupI/{txt}', 'r') as file:
-            lines = file.readlines()
-            matrix_lines = lines[3:-8]
-            for line in matrix_lines:
-                Q_matrix.append(list(map(int, line.strip().split())))
+        Q_matrix = data_array['Q_matrix']
 
         Q = np.zeros((len(profit), len(profit)), dtype=int)
         for i in range(len(Q_matrix)):
