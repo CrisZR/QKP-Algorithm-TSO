@@ -13,7 +13,7 @@ def obtain_data(arr: list) -> typing.Optional[dict]:
     N = int(arr.pop(0).strip())
     coefficients = arr.pop(0).strip()
 
-    # Read matrix Q (NxN)
+    # Read matrix Q (tamaño NxN)
     Q_matrix = []
     for _ in range(N):
         line = arr.pop(0).strip()
@@ -42,6 +42,29 @@ def obtain_data(arr: list) -> typing.Optional[dict]:
 
     return data_dict
 
+def swap_1_1(S, wa, total_profit, profit, wi, C, Q):
+    improved = True
+    while improved:
+        improved = False
+        for i in S:  
+            for j in range(len(profit)):  
+                if j not in S and wa - wi[i] + wi[j] <= C:  
+                    new_profit = total_profit - profit[i] + profit[j]
+                    interaction_loss = sum(Q[i][k] for k in S if k != i)
+                    interaction_gain = sum(Q[j][k] for k in S if k != i)
+                    new_profit += interaction_gain - interaction_loss
+
+                    if new_profit > total_profit:
+                        S.remove(i)
+                        S.append(j)
+                        wa = wa - wi[i] + wi[j]
+                        total_profit = new_profit
+                        improved = True
+                        break
+            if improved:
+                break
+    return S, wa, total_profit
+
 # Function to call the instance and process the data
 def call_instance(txt: str) -> None:
     try:
@@ -64,11 +87,12 @@ def call_instance(txt: str) -> None:
         sorted_items = sorted(R.items(), key=lambda x: x[1], reverse=True)
 
         Q_matrix = data_array['Q_matrix']
+
         Q = np.zeros((len(profit), len(profit)), dtype=int)
         for i in range(len(Q_matrix)):
             for j in range(len(Q_matrix[i])):
                 Q[i][j] = Q_matrix[i][j]
-                Q[j][i] = Q_matrix[i][j]  # Make symmetric
+                Q[j][i] = Q_matrix[i][j]  # Make it symmetric
 
         start_time = time.time()
 
@@ -100,32 +124,9 @@ def call_instance(txt: str) -> None:
             wa += wi[selected]
             total_profit += profit[selected] + sum(Q[selected][j] for j in S if j != selected)
 
-        # --- LOCAL SEARCH: 1-1 Swap to improve solution ---
-        improved = True
-        while improved:
-            improved = False
-            for i_in in S:
-                for i_out in [i for i in range(len(profit)) if i not in S]:
-                    new_weight = wa - wi[i_in] + wi[i_out]
-                    if new_weight <= C:
-                        new_profit = (total_profit 
-                                      - profit[i_in] 
-                                      + profit[i_out] 
-                                      - sum(Q[i_in][j] for j in S if j != i_in)
-                                      + sum(Q[i_out][j] for j in S if j != i_in) 
-                                      )
-                        if new_profit > total_profit:
-                            S.remove(i_in)
-                            S.append(i_out)
-                            wa = new_weight
-                            total_profit = new_profit
-                            improved = True
-                            break  # Restart after change
-                if improved:
-                    break
-
         end_time = time.time()
         elapsed_time = end_time - start_time
+        S, wa, total_profit = swap_1_1(S, wa, total_profit, profit, wi, C, Q)
 
         print("\n--- RESULTS ---")
         print("Selected items (indexes):", [i + 1 for i in S])
@@ -149,12 +150,10 @@ def call_instance(txt: str) -> None:
         logger.error(f'Error while loading instance: {str(e)}')
         print(f'Execution error: {str(e)}')
 
-# List all instances available
 cwd = os.listdir('QKPGroupI')
 for index, file in enumerate(cwd, start=1):
     print(f'{index} - {file}')
 
-# User selects the instance
 try:
     tx = int(input('Choose the instance index: '))
     if 1 <= tx <= len(cwd):
