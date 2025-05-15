@@ -1,41 +1,41 @@
 # QKP-Algorithm-TSO
 
-Este proyecto implementa un algoritmo para resolver instancias del Quadratic Knapsack Problem (QKP) utilizando heurísticas de selección y mejora local (swap 1-1).
+This project implements an algorithm to solve instances of the Quadratic Knapsack Problem (QKP) using selection heuristics and local improvement (swap 1-1).
 
-## Estructura del Proyecto
+## Project Structure
 
-- `script_swap_1_1.py`: Script principal que carga instancias, ejecuta el algoritmo y muestra resultados.
-- `QKPGroupI/`: Carpeta con archivos de instancias del problema en formato `.txt`.
+- `script_swap_1_1.py`: Main script that loads instances, runs the algorithm, and displays results.
+- `QKPGroupI/`: Folder containing problem instance files in `.txt` format.
 
-## Requisitos
+## Requirements
 
 - Python 3.x
 - Numpy
 
-Instala las dependencias necesarias con:
+Install the required dependencies with:
 
 ```sh
 pip install numpy
 ```
 
-## Uso
+## Usage
 
-1. Coloca las instancias del problema en la carpeta `QKPGroupI`.
-2. Ejecuta el script principal:
+1. Place the problem instances in the `QKPGroupI` folder.
+2. Run the main script:
 
 ```sh
 python script_swap_1_1.py
 ```
 
-3. Selecciona el índice de la instancia que deseas resolver cuando se te solicite.
+3. Select the index of the instance you want to solve when prompted.
 
-## Descripción del Algoritmo
+## Algorithm Description
 
-- **Carga de datos:** Lee la instancia y extrae los parámetros del problema.
-- **Selección inicial:** Selecciona elementos basados en la rentabilidad individual.
-- **Mejora local:** Aplica la heurística swap 1-1 para mejorar la solución.
-- **Resultados:** Muestra los elementos seleccionados, el beneficio total, el peso total y verifica la factibilidad de la solución.
+- **Data loading:** Reads the instance and extracts problem parameters.
+- **Initial selection:** Selects items based on individual profitability.
+- **Local improvement:** Applies the swap 1-1 heuristic to improve the solution.
+- **Results:** Displays selected items, total profit, total weight, and checks solution feasibility.
 
-## Contacto
+## Contact
 
-Para dudas o sugerencias, contacta al autor del repositorio.
+For questions or suggestions, contact the repository author.
