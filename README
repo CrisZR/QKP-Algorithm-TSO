@@ -1,0 +1,41 @@
+# QKP-Algorithm-TSO
+
+Este proyecto implementa un algoritmo para resolver instancias del Quadratic Knapsack Problem (QKP) utilizando heurísticas de selección y mejora local (swap 1-1).
+
+## Estructura del Proyecto
+
+- `script_swap_1_1.py`: Script principal que carga instancias, ejecuta el algoritmo y muestra resultados.
+- `QKPGroupI/`: Carpeta con archivos de instancias del problema en formato `.txt`.
+
+## Requisitos
+
+- Python 3.x
+- Numpy
+
+Instala las dependencias necesarias con:
+
+```sh
+pip install numpy
+```
+
+## Uso
+
+1. Coloca las instancias del problema en la carpeta `QKPGroupI`.
+2. Ejecuta el script principal:
+
+```sh
+python script_swap_1_1.py
+```
+
+3. Selecciona el índice de la instancia que deseas resolver cuando se te solicite.
+
+## Descripción del Algoritmo
+
+- **Carga de datos:** Lee la instancia y extrae los parámetros del problema.
+- **Selección inicial:** Selecciona elementos basados en la rentabilidad individual.
+- **Mejora local:** Aplica la heurística swap 1-1 para mejorar la solución.
+- **Resultados:** Muestra los elementos seleccionados, el beneficio total, el peso total y verifica la factibilidad de la solución.
+
+## Contacto
+
+Para dudas o sugerencias, contacta al autor del repositorio.
