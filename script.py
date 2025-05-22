@@ -7,9 +7,7 @@ import time
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-
 # Function to obtain data from the file
-
 def obtain_data(arr: list) -> typing.Optional[dict]:
     reference = arr.pop(0).strip()
     N = int(arr.pop(0).strip())
@@ -27,7 +25,6 @@ def obtain_data(arr: list) -> typing.Optional[dict]:
     capacity = arr.pop(0).strip()
     weights = arr.pop(0).strip()
 
-    
     error1 = arr.pop(-2).strip()
     error2 = arr.pop(-1).strip()
 
@@ -45,8 +42,35 @@ def obtain_data(arr: list) -> typing.Optional[dict]:
 
     return data_dict
 
-#Function to call the instance and process the data
+def swap_1_1(S, wa, total_profit, profit, wi, C, Q):
+    improved = True
+    while improved:
+        improved = False
 
+        S_sorted= sorted(S, key=lambda x: profit[x])
+        div=max(1, len(S)/4)
+        S_low=S_sorted[:div]
+        
+        for i in S_low:  
+            for j in range(len(profit)):  
+                if j not in S and wa - wi[i] + wi[j] <= C:  
+                    new_profit = total_profit - profit[i] + profit[j]
+                    interaction_loss = sum(Q[i][k] for k in S if k != i)
+                    interaction_gain = sum(Q[j][k] for k in S if k != i)
+                    new_profit += interaction_gain - interaction_loss
+
+                    if new_profit > total_profit:
+                        S.remove(i)
+                        S.append(j)
+                        wa = wa - wi[i] + wi[j]
+                        total_profit = new_profit
+                        improved = True
+                        break
+            if improved:
+                break
+    return S, wa, total_profit
+
+# Function to call the instance and process the data
 def call_instance(txt: str) -> None:
     try:
         logger.info(f"Loading instance {txt}")
@@ -107,6 +131,7 @@ def call_instance(txt: str) -> None:
 
         end_time = time.time()
         elapsed_time = end_time - start_time
+        S, wa, total_profit = swap_1_1(S, wa, total_profit, profit, wi, C, Q)
 
         print("\n--- RESULTS ---")
         print("Selected items (indexes):", [i + 1 for i in S])
@@ -116,13 +141,11 @@ def call_instance(txt: str) -> None:
 
         # Feasibility checker
         print("\n--- FEASIBILITY CHECKER ---")
-        # Check for repeated items
         if len(S) == len(set(S)):
             print("Are there repeated items?: No")
         else:
             print("Are there repeated items?: Yes")
 
-        # Check if knapsack capacity is exceeded
         if wa > C:
             print("Is knapsack capacity exceeded?: Yes")
         else:
@@ -145,4 +168,3 @@ try:
         raise ValueError('Index out of range')
 except ValueError as e:
     print(f'Error: {e}')
-
